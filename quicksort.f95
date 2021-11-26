@@ -4,26 +4,26 @@ program main
    use iso_fortran_env
    implicit none
    INTEGER(int64) :: seed
-   INTEGER :: i, arr_s
+   INTEGER :: l, arr_s
    INTEGER, DIMENSION(:), ALLOCATABLE :: ARR
    REAL(int64) :: T1,T2
    
-   arr_s = 50000 ! array size
+   arr_s = 100 ! array size
 
    seed = X'70A0A0A0A0A0A0A0'
 
    ALLOCATE(ARR(arr_s))
-   do i = 1, arr_s
-      ARR(i) = next(31)
+   do l = 1, arr_s
+      ARR(l) = next(31)
    end do
 
-   !WRITE(*,'(A/,*(I11))')'unsorted:', ARR(:)
+   WRITE(*,'(A/,*(I11))')'unsorted:', ARR(:)
 
    CALL cpu_time(T1)
    CALL quicksort(ARR, 1, SIZE(ARR))
    CALL cpu_time(T2)
 
-   !WRITE(*,'(A/,*(I11))')'sorted:', ARR(:)
+   WRITE(*,'(A/,*(I11))')'sorted:', ARR(:)
    WRITE(*,'(A, EN16.8)') 'time elapsed:', (T2-T1)
 
    DEALLOCATE(ARR)
