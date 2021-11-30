@@ -11,7 +11,8 @@ https://docs.oracle.com/javase/8/docs/api/java/util/Random.html
 long long seed;
 
 void setSeed (long long newSeed) {
-  seed=newSeed;
+  seed=(newSeed ^ 0x5DEECE66DLL) & ((1LL << 48) - 1);
+//  seed=newSeed;
 }
 
 /**

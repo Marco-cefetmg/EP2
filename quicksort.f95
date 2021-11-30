@@ -6,48 +6,58 @@ program main
    INTEGER(int64) :: seed
    INTEGER :: l, arr_s
    INTEGER, DIMENSION(:), ALLOCATABLE :: ARR
-   REAL(int64) :: T1,T2
+   INTEGER(int64) :: T1, T2, rate
    
-   arr_s = 100 ! array size
+   arr_s = 500E3 ! array size
 
-   seed = X'70A0A0A0A0A0A0A0'
+   CALL setseed(X'A0A0A0A0A0A0A0A0')
 
    ALLOCATE(ARR(arr_s))
    do l = 1, arr_s
       ARR(l) = next(31)
    end do
 
-   WRITE(*,'(A/,*(I11))')'unsorted:', ARR(:)
+   CALL system_clock(count_rate=rate)
 
-   CALL cpu_time(T1)
+   !WRITE(*,'(A/,*(I11))')'unsorted:', ARR(:)
+
+   CALL system_clock(T1)
    CALL quicksort(ARR, 1, SIZE(ARR))
-   CALL cpu_time(T2)
+   CALL system_clock(T2)
 
-   WRITE(*,'(A/,*(I11))')'sorted:', ARR(:)
-   WRITE(*,'(A, EN16.8)') 'time elapsed:', (T2-T1)
+   !WRITE(*,'(A/,*(I11))')'sorted:', ARR(:)
+   WRITE(*,'(A, EN16.8)') 'time elapsed:', REAL(T2-T1)/REAL(rate)
 
    DEALLOCATE(ARR)
 
 contains
-    !RNG-java8
-    function next(bits) result(retval)
+   !RNG-java8
+   subroutine setseed(newSeed)
+      implicit none
+      INTEGER(KIND=16), INTENT(IN) :: newSeed
+
+      seed = AND((TRANSFER(XOR(newSeed, X'5DEECE66D'), 1_int64)), (ISHFT(1_int64, 48) - 1))
+
+   end subroutine setseed
+
+   function next(bits) result(retval)
       implicit none
       INTEGER, INTENT(IN) :: bits
       INTEGER :: retval
-      
-      seed = AND((seed * X'5DEECE66D' + X'B'), (ISHFT(1_int64, 48) - 1))
-      !seed = IAND((seed * X'5DEECE66D' + X'B'), X'ffffffffffffffff') !mask problem
+
+      seed = AND(TRANSFER(seed * X'5DEECE66D' + X'B', 1_int64), (ISHFT(1_int64, 48) - 1))
       retval = INT(ISHFT(seed, -(48 - bits)))
-      
+
    end function next
    
-   function partition(A, left, right) result(returnval)
+   function partition(A, left, right) result(returnval) 
       implicit none
       INTEGER, DIMENSION(:), INTENT(INOUT) :: A
       INTEGER, INTENT(IN) :: left, right
       INTEGER :: pivot, i, j, temp, returnval
       
-      pivot = A(right)
+      pivot = A(INT((left+right)/2))
+      !pivot = A(right)
       i = left-1
       
       do j = left, (right-1)
@@ -72,5 +82,5 @@ contains
       CALL quicksort(A, marker+1, right)
    end if
    
-end subroutine quicksort
+   end subroutine quicksort
 end program main
