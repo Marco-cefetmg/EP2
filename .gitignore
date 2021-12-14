@@ -1,4 +1,5 @@
 /.vscode
+/.cloudflared
 *.txt
 
 # Prerequisites

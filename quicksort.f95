@@ -18,10 +18,17 @@ program main
    hash=next(31)
    hash=next(31)
 
-                                      !HASH, CPU
-   WRITE(*,'(I0,8(XA),X)', advance='no')hash,'https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i5-4300M+%40+2.60GHz',&
-   !PASSMARK, MEMORIA_RAM, FREQ_RAM, QTD_MEMORIA, QTD_PENTES_MEMORIA, SO, ALGORITMO
-   '3011','DDR3','1600','8','2','Microsoft Windows NT 10.0.19043.0','QUICKSORT'
+   !                                   !HASH, CPU
+   !WRITE(*,'(I0,8(XA),X)', advance='no')hash,'https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i5-4300M+%40+2.60GHz',&
+   !!PASSMARK, MEMORIA_RAM, FREQ_RAM, QTD_MEMORIA, QTD_PENTES_MEMORIA, SO, ALGORITMO
+   !'3011','DDR3','1600','8','2','Microsoft_Windows_NT_10.0.19043.0','QUICKSORT'
+
+                                         !HASH, CPU
+   WRITE(*,'(I0,8(AA),A)', advance='no')hash,';','https://www.cpubenchmark.net/cpu.php?cpu=Intel+Xeon+D-2141I+%40+2.20GHz',&
+   !PASSMARK, MEMORIA_RAM, FREQ_RAM, QTD_MEMORIA, QTD_PENTES_MEMORIA,
+   ';','1750',';','DDR3',';','1600',';','12',';','1',';', &
+   !SO, ALGORITMO
+   'Linux d78bf3c60d90 5.4.104+ #1 SMP Sat Jun 5 09:50:34 PDT 2021 x86_64 GNU/Linux',';','QUICKSORT',';'
 
 
    CALL system_clock(count_rate=rate)
@@ -40,7 +47,7 @@ program main
       CALL quicksort(ARR, 1, SIZE(ARR))
       CALL system_clock(T2)
    
-      WRITE(*,'(I0,XF0.4,X)', advance='no')last_elem_unsorted,(REAL(T2-T1)/REAL(rate))*1e6
+      WRITE(*,'(I0,A,F0.4,A)', advance='no')last_elem_unsorted,';',(REAL(T2-T1)/REAL(rate))*1e6,';'
    
       DEALLOCATE(ARR)
    end do
@@ -70,8 +77,8 @@ contains
       INTEGER, INTENT(IN) :: left, right
       INTEGER :: pivot, i, j, temp, returnval
       
-      !pivot = A(INT((left+right)/2))
-      pivot = A(right)
+      pivot = A(INT((left+right)/2))
+      !pivot = A(right)
       i = left-1
       
       do j = left, (right-1)
